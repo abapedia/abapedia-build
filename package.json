@@ -20,6 +20,13 @@
   "devDependencies": {
     "@abaplint/cli": "^2.82.3",
     "@abaplint/core": "^2.82.3",
+    "@types/progress": "^2.0.5",
+    "progress": "^2.0.3",
+    "json5": "^2.2.0",
+    "xml-js": "^1.6.11",
+    "glob": "^7.2.0",
+    "@types/glob": "^7.2.0",
+    "chalk": "=4.1.2",
     "@types/node": "^16.11.10",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
