@@ -1,6 +1,7 @@
 export interface IProject {
   name: string;
   url: string;
+  skip?: string;
 }
 
 export interface IConfig {
@@ -12,6 +13,7 @@ export const config: IConfig = {
     {
       name: "abap2xlsx",
       url: "https://github.com/sapmentors/abap2xlsx",
+      skip: "demos/",
     }
   ]
 }

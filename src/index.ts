@@ -11,25 +11,29 @@ async function run() {
     process.stderr.write("Clone: " + p.url + "\n");
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "abapedia-build-"));
     childProcess.execSync("git clone --quiet --depth 1 " + p.url + " .", {cwd: dir, stdio: "inherit"});
+    const oldCWD = process.cwd();
     process.chdir(dir);
 
     const args: abaplintCli.Arguments = {
-      "configFilename": undefined,
       "format": "standard",
-      "compress": false,
-      "parsingPerformance": false,
-      "showHelp": false,
-      "showVersion": false,
-      "outputDefaultConfig": false,
-      "runFix": false,
-      "runRename": false,
     };
 
     const result = await abaplintCli.run(args);
-    console.dir("issues: " + result.issues.length);
-    console.dir("objects: " + result.reg?.getObjectCount());
+    process.chdir(oldCWD);
+    fs.rmSync(dir, {recursive: true});
 
-    fs.rmSync(dir, { recursive: true });
+    console.log("issues: " + result.issues.length);
+    if (result.reg) {
+      console.log("objects: " + result.reg.getObjectCount());
+      for (const o of result.reg.getObjects()) {
+        if (result.reg.isDependency(o)) {
+          continue;
+        } else if (p.skip && o.getFiles()[0].getFilename().includes(p.skip)) {
+          continue;
+        }
+        console.dir(o.getType() + " " + o.getName());
+      }
+    }
   }
 }
 
