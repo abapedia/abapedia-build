@@ -4,8 +4,11 @@ import * as path from "path";
 import * as childProcess from "child_process";
 import {config} from "./config";
 import * as abaplintCli from "@abaplint/cli";
+import * as abaplint from "@abaplint/core";
+import { BUILD_FOLDER, Output } from "./output";
 
 async function run() {
+  fs.rmSync(BUILD_FOLDER, {recursive: true});
 
   for (const p of config.projects) {
     process.stderr.write("Clone: " + p.url + "\n");
@@ -23,17 +26,21 @@ async function run() {
     fs.rmSync(dir, {recursive: true});
 
     console.log("issues: " + result.issues.length);
-    if (result.reg) {
-      console.log("objects: " + result.reg.getObjectCount());
-      for (const o of result.reg.getObjects()) {
-        if (result.reg.isDependency(o)) {
-          continue;
-        } else if (p.skip && o.getFiles()[0].getFilename().includes(p.skip)) {
-          continue;
-        }
-        console.dir(o.getType() + " " + o.getName());
-      }
+    if (result.reg === undefined) {
+      continue;
     }
+
+    const objects: abaplint.IObject[] = [];
+    for (const o of result.reg.getObjects()) {
+      if (result.reg.isDependency(o)) {
+        continue;
+      } else if (p.skip && o.getFiles()[0].getFilename().includes(p.skip)) {
+        continue;
+      }
+      objects.push(o);
+    }
+
+    new Output(p.name).output(objects);
   }
 }
 
