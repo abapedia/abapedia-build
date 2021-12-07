@@ -2,30 +2,41 @@ import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import * as childProcess from "child_process";
-import {config} from "./config";
+import {config, IProject} from "./config";
 import * as abaplintCli from "@abaplint/cli";
 import * as abaplint from "@abaplint/core";
 import { BUILD_FOLDER, Output } from "./output";
 
+async function cloneAndParse(p: IProject) {
+  process.stderr.write("Clone: " + p.url + "\n");
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "abapedia-build-"));
+  childProcess.execSync("git clone --quiet --depth 1 " + p.url + " .", {cwd: dir, stdio: "inherit"});
+  const oldCWD = process.cwd();
+  process.chdir(dir);
+
+  const args: abaplintCli.Arguments = {"format": "standard"};
+
+  const result = await abaplintCli.run(args);
+  process.chdir(oldCWD);
+  fs.rmSync(dir, {recursive: true});
+
+  console.log("issues: " + result.issues.length);
+  return result;
+}
+
+function buildIndex() {
+  let html = "";
+  for (const p of config.projects) {
+    html += `<a href="./${p.name}/">${p.name}<br>\n`;
+  }
+  fs.writeFileSync(path.join(BUILD_FOLDER, "index.html"), html);
+}
+
 async function run() {
-  fs.rmSync(BUILD_FOLDER, {recursive: true});
+  fs.rmSync(BUILD_FOLDER, {recursive: true, force: true});
 
   for (const p of config.projects) {
-    process.stderr.write("Clone: " + p.url + "\n");
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "abapedia-build-"));
-    childProcess.execSync("git clone --quiet --depth 1 " + p.url + " .", {cwd: dir, stdio: "inherit"});
-    const oldCWD = process.cwd();
-    process.chdir(dir);
-
-    const args: abaplintCli.Arguments = {
-      "format": "standard",
-    };
-
-    const result = await abaplintCli.run(args);
-    process.chdir(oldCWD);
-    fs.rmSync(dir, {recursive: true});
-
-    console.log("issues: " + result.issues.length);
+    const result = await cloneAndParse(p);
     if (result.reg === undefined) {
       continue;
     }
@@ -42,6 +53,8 @@ async function run() {
 
     new Output(p.name).output(objects);
   }
+
+  buildIndex();
 }
 
 run().then(() => {

@@ -7,6 +7,7 @@ import { DTELOutput } from "./objects/dtel_output";
 import { INTFOutput } from "./objects/intf_output";
 import { TABLOutput } from "./objects/tabl_output";
 import { TTYPOutput } from "./objects/ttyp_output";
+import { TYPEOutput } from "./objects/type_output";
 
 export const BUILD_FOLDER = "build";
 
@@ -42,6 +43,9 @@ export class Output {
         case "INTF":
           result += new INTFOutput().output(o as abaplint.Objects.Interface);
           break;
+        case "TYPE":
+          result += new TYPEOutput().output(o as abaplint.Objects.TypePool);
+          break;
         case "PROG":
           continue;
         case "DEVC":
@@ -55,7 +59,7 @@ export class Output {
           break;
       }
     }
-    fs.writeFileSync(path.join(this.folder, "foobar.html"), result, "utf-8");
+    fs.writeFileSync(path.join(this.folder, "index.html"), result, "utf-8");
 
   }
 }
