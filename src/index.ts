@@ -51,7 +51,7 @@ async function run() {
       objects.push(o);
     }
 
-    new Output(p.name).output(objects);
+    new Output(p.name, result.reg).output(objects);
   }
 
   buildIndex();

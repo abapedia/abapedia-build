@@ -13,8 +13,10 @@ export const BUILD_FOLDER = "build";
 
 export class Output {
   private readonly folder: string;
+  private readonly reg: abaplint.IRegistry;
 
-  public constructor(name: string) {
+  public constructor(name: string, reg: abaplint.IRegistry) {
+    this.reg = reg;
     this.folder = path.join(BUILD_FOLDER, name);
     fs.mkdirSync(this.folder, {recursive: true});
   }
@@ -32,13 +34,13 @@ export class Output {
           result += new TTYPOutput().output(o as abaplint.Objects.TableType);
           break;
         case "DTEL":
-          result += new DTELOutput().output(o as abaplint.Objects.DataElement);
+          result += new DTELOutput().output(o as abaplint.Objects.DataElement, this.reg);
           break;
         case "DOMA":
-          result += new DOMAOutput().output(o as abaplint.Objects.Domain);
+          result += new DOMAOutput().output(o as abaplint.Objects.Domain, this.reg);
           break;
         case "TABL":
-          result += new TABLOutput().output(o as abaplint.Objects.Table);
+          result += new TABLOutput().output(o as abaplint.Objects.Table, this.reg);
           break;
         case "INTF":
           result += new INTFOutput().output(o as abaplint.Objects.Interface);
@@ -58,6 +60,7 @@ export class Output {
           console.dir("TODO: handle object type " + o.getType());
           break;
       }
+      result += "<hr>\n";
     }
     fs.writeFileSync(path.join(this.folder, "index.html"), result, "utf-8");
 
