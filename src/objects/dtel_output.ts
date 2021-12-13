@@ -5,7 +5,7 @@ export class DTELOutput {
     let ret = object.getType() + " " + object.getName() + "<br>\n";
     const parsed = object.parseType(reg);
     ret += parsed.toText(0) + "<br>\n";
-    ret += parsed.getQualifiedName();
+// todo    ret += object.getDomainName()
     return ret;
   }
 }
