@@ -14,7 +14,7 @@ export class TABLOutput {
         } else if (f instanceof abaplint.BasicTypes.TableType) {
           text = "Table";
         }
-        ret += `<tr><td>${f.name}</td><td>${f.type.getQualifiedName()}</td><td>${text}</td></tr>\n`;
+        ret += `<tr><td>${f.name}</td><td>${f.type.getQualifiedName() || ""}</td><td>${text}</td></tr>\n`;
       }
       ret += `</table>\n`;
     }
