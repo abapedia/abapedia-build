@@ -60,7 +60,7 @@ export class Output {
           continue;
         case "XSLT":
           result += new XSLTOutput().output(o as abaplint.Objects.Transformation);
-          continue;
+          break;;
         default:
           console.dir("TODO: handle object type " + o.getType());
           break;

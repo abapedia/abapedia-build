@@ -6,7 +6,7 @@ export class TABLOutput {
     const type = obj.parseType(reg);
     if (type instanceof abaplint.BasicTypes.StructureType) {
       ret += `<table border="1">\n`;
-      ret += `<tr><td><u>Field</u></td><td>DDIC</td><td>Type</td></tr>\n`;
+      ret += `<tr><td><u>Field</u></td><td><u>DDIC</u></td><td><u>Type</u></td></tr>\n`;
       for (const f of type.getComponents()) {
         let text = f.type.toText(0);
         if (f.type instanceof abaplint.BasicTypes.StructureType) {
