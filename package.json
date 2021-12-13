@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/abapedia/abapedia-build#readme",
   "devDependencies": {
-    "@abaplint/cli": "^2.82.16",
-    "@abaplint/core": "^2.82.16",
+    "@abaplint/cli": "^2.82.17",
+    "@abaplint/core": "^2.82.17",
     "@types/progress": "^2.0.5",
     "progress": "^2.0.3",
     "json5": "^2.2.0",
