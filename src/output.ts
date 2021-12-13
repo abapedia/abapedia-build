@@ -8,6 +8,7 @@ import { INTFOutput } from "./objects/intf_output";
 import { TABLOutput } from "./objects/tabl_output";
 import { TTYPOutput } from "./objects/ttyp_output";
 import { TYPEOutput } from "./objects/type_output";
+import { XSLTOutput } from "./objects/xslt_output";
 
 export const BUILD_FOLDER = "build";
 
@@ -49,12 +50,16 @@ export class Output {
           result += new TYPEOutput().output(o as abaplint.Objects.TypePool);
           break;
         case "PROG":
+          // ignore?
           continue;
         case "DEVC":
+          // ignore?
           continue;
         case "MSAG":
+          // todo
           continue;
         case "XSLT":
+          result += new XSLTOutput().output(o as abaplint.Objects.Transformation);
           continue;
         default:
           console.dir("TODO: handle object type " + o.getType());
