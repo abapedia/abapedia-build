@@ -11,6 +11,7 @@ import { TABLOutput } from "./objects/tabl_output";
 import { TTYPOutput } from "./objects/ttyp_output";
 import { TYPEOutput } from "./objects/type_output";
 import { XSLTOutput } from "./objects/xslt_output";
+import { objectFilename, objectLink } from "./objects/_helpers";
 
 export const BUILD_FOLDER = "build";
 
@@ -21,10 +22,12 @@ type IndexData = {
 
 export class Output {
   private readonly folder: string;
+  private readonly name: string;
   private readonly reg: abaplint.IRegistry;
 
   public constructor(name: string, reg: abaplint.IRegistry) {
     this.reg = reg;
+    this.name = name;
     this.folder = path.join(BUILD_FOLDER, name);
     fs.mkdirSync(this.folder, {recursive: true});
   }
@@ -34,49 +37,51 @@ export class Output {
 
     let index = "";
     const indexData: IndexData[] = [];
-    for (const o of objects) {
-      let result = "";
+    for (let i = 0; i < objects.length; i++) {
+      const o = objects[i];
+      const prev = objects[i-1];
+      const next = objects[i+1];
+      let result = "<h2>" + o.getType() + " " + o.getName() + "</h2>\n";
+
+      result += `<small><a href="./">Home</a></small><br>`;
+      if (prev) {
+        result += "<small>Previous Object: " + objectLink(prev.getType(), prev.getName()) + "</small><br>";
+      }
+      if (next) {
+        result += "<small>Next Object: " + objectLink(next.getType(), next.getName()) + "</small><br>";
+      }
+      result += "<br>";
+
       switch (o.getType()) {
         case "CLAS":
-          result = new CLASOutput().output(o as abaplint.Objects.Class);
+          result += new CLASOutput().output(o as abaplint.Objects.Class);
           break;
         case "TTYP":
-          result = new TTYPOutput().output(o as abaplint.Objects.TableType);
+          result += new TTYPOutput().output(o as abaplint.Objects.TableType);
           break;
         case "DTEL":
-          result = new DTELOutput().output(o as abaplint.Objects.DataElement, this.reg);
+          result += new DTELOutput().output(o as abaplint.Objects.DataElement, this.reg);
           break;
         case "DOMA":
-          result = new DOMAOutput().output(o as abaplint.Objects.Domain, this.reg);
+          result += new DOMAOutput().output(o as abaplint.Objects.Domain, this.reg);
           break;
         case "TABL":
-          result = new TABLOutput().output(o as abaplint.Objects.Table, this.reg);
+          result += new TABLOutput().output(o as abaplint.Objects.Table, this.reg);
           break;
         case "INTF":
-          result = new INTFOutput().output(o as abaplint.Objects.Interface);
+          result += new INTFOutput().output(o as abaplint.Objects.Interface);
           break;
         case "TYPE":
-          result = new TYPEOutput().output(o as abaplint.Objects.TypePool);
+          result += new TYPEOutput().output(o as abaplint.Objects.TypePool);
           break;
-        case "PROG":
-          // ignore?
-          continue;
-        case "DEVC":
-          // ignore?
-          continue;
-        case "MSAG":
-          // todo
-          continue;
         case "XSLT":
-          result = new XSLTOutput().output(o as abaplint.Objects.Transformation);
+          result += new XSLTOutput().output(o as abaplint.Objects.Transformation);
           break;
         default:
           console.dir("TODO: handle object type " + o.getType());
           break;
       }
-      let filename = o.getName() + "." + o.getType() + ".html";
-      filename = filename.toLowerCase();
-      filename = filename.replace(/\//g, "#");
+      const filename = objectFilename(o);
       fs.writeFileSync(
         path.join(this.folder, filename.toLowerCase()),
         HTML.preAmble(" - " + o.getName() + " " + o.getType()) + result + HTML.preAmble(),
@@ -92,7 +97,7 @@ export class Output {
 
     fs.writeFileSync(
       path.join(this.folder, "index.html"),
-      HTML.preAmble() + index + HTML.preAmble(),
+      HTML.preAmble(" - " + this.name) + index + HTML.preAmble(),
       "utf-8");
 
     this.buildIndex(indexData);

@@ -3,7 +3,7 @@ import { outputDefinition } from "./_helpers";
 
 export class INTFOutput {
   public output(object: abaplint.Objects.Interface): string {
-    let ret = object.getType() + " " + object.getName() + "<br>\n";
+    let ret = "";
     ret += outputDefinition(object.getDefinition());
     return ret;
   }

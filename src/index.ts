@@ -35,7 +35,10 @@ function buildIndex() {
     "utf-8");
 }
 
-function sortObjects(objects: abaplint.IObject[]) {
+function sortAndFilterObjects(objects: abaplint.IObject[]) {
+  objects.filter((o) => {
+    return o.getType() !== "PROG" && o.getType() !== "DEVC" && o.getType() !== "MSAG";
+  });
   objects.sort((a, b) => {
     return (a.getType() + a.getName()).localeCompare(b.getType() + b.getName());
   });
@@ -61,7 +64,7 @@ async function run() {
       objects.push(o);
     }
 
-    new Output(p.name, result.reg).output(sortObjects(objects));
+    new Output(p.name, result.reg).output(sortAndFilterObjects(objects));
   }
 
   buildIndex();
