@@ -11,6 +11,7 @@ import { TABLOutput } from "./objects/tabl_output";
 import { TTYPOutput } from "./objects/ttyp_output";
 import { TYPEOutput } from "./objects/type_output";
 import { XSLTOutput } from "./objects/xslt_output";
+import { objectFilename } from "./objects/_helpers";
 
 export const BUILD_FOLDER = "build";
 
@@ -21,10 +22,12 @@ type IndexData = {
 
 export class Output {
   private readonly folder: string;
+  private readonly name: string;
   private readonly reg: abaplint.IRegistry;
 
   public constructor(name: string, reg: abaplint.IRegistry) {
     this.reg = reg;
+    this.name = name;
     this.folder = path.join(BUILD_FOLDER, name);
     fs.mkdirSync(this.folder, {recursive: true});
   }
@@ -74,9 +77,7 @@ export class Output {
           console.dir("TODO: handle object type " + o.getType());
           break;
       }
-      let filename = o.getName() + "." + o.getType() + ".html";
-      filename = filename.toLowerCase();
-      filename = filename.replace(/\//g, "#");
+      const filename = objectFilename(o);
       fs.writeFileSync(
         path.join(this.folder, filename.toLowerCase()),
         HTML.preAmble(" - " + o.getName() + " " + o.getType()) + result + HTML.preAmble(),
@@ -92,7 +93,7 @@ export class Output {
 
     fs.writeFileSync(
       path.join(this.folder, "index.html"),
-      HTML.preAmble() + index + HTML.preAmble(),
+      HTML.preAmble(" - " + this.name) + index + HTML.preAmble(),
       "utf-8");
 
     this.buildIndex(indexData);

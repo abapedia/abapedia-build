@@ -1,4 +1,5 @@
 import * as abaplint from "@abaplint/core";
+import { objectLink } from "./_helpers";
 
 export class TABLOutput {
   public output(obj: abaplint.Objects.Table, reg: abaplint.IRegistry): string {
@@ -19,7 +20,13 @@ export class TABLOutput {
           ddicName = "";
         }
         if (ddicName !== "") {
-          ddicName = `<a href="todo">${ddicName}</a>`;
+          if (f.type instanceof abaplint.BasicTypes.StructureType) {
+            ddicName = objectLink("TABL", ddicName);
+          } else if (f.type instanceof abaplint.BasicTypes.TableType) {
+            ddicName = objectLink("TTYP", ddicName);
+          } else {
+            ddicName = objectLink("DTEL", ddicName);
+          }
         }
         ret += `<tr><td>${f.name}</td><td>${ddicName}</td><td>${text}</td></tr>\n`;
       }

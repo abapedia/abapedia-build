@@ -24,3 +24,19 @@ export function outputDefinition(def: abaplint.IInterfaceDefinition | undefined)
 
   return ret;
 }
+
+export function objectLink(type: string, name: string): string {
+  const filename = buildFilename(type, name);
+  return `<a href="${encodeURIComponent(filename)}">` + name + "</a>";
+}
+
+export function buildFilename(type: string, name: string) {
+  let filename = name + "." + type + ".html";
+  filename = filename.toLowerCase();
+  filename = filename.replace(/\//g, "#");
+  return filename;
+}
+
+export function objectFilename(o: abaplint.IObject) {
+  return buildFilename(o.getType(), o.getName());
+}
