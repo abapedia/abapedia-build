@@ -1,0 +1,30 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    - run: npm install
+    - run: npm test
+    - name: Update abapedia.org
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main' && github.repository == 'abapedia/abapedia-build'
+      with:
+        deploy_key: ${{ secrets.DEPLOY_KEY }}
+        external_repository: abapedia/abapedia.org
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        publish_branch: main
+        cname: abapedia.org
+        force_orphan: true
+        publish_dir: ./build
