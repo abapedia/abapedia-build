@@ -6,6 +6,7 @@ import {config, IProject} from "./config";
 import * as abaplintCli from "@abaplint/cli";
 import * as abaplint from "@abaplint/core";
 import { BUILD_FOLDER, Output } from "./output";
+import { HTML } from "./html";
 
 async function cloneAndParse(p: IProject) {
   process.stderr.write("Clone: " + p.url + "\n");
@@ -29,7 +30,9 @@ function buildIndex() {
   for (const p of config.projects) {
     html += `<a href="./${p.name}/">${p.name}<br>\n`;
   }
-  fs.writeFileSync(path.join(BUILD_FOLDER, "index.html"), html);
+  fs.writeFileSync(path.join(BUILD_FOLDER, "index.html"),
+    HTML.preAmble() + html + HTML.postAmble(),
+    "utf-8");
 }
 
 function sortObjects(objects: abaplint.IObject[]) {

@@ -2,6 +2,7 @@ import * as abaplint from "@abaplint/core";
 import * as fs from "fs";
 import lunr = require("lunr");
 import * as path from "path";
+import { HTML } from "./html";
 import { CLASOutput } from "./objects/clas_output";
 import { DOMAOutput } from "./objects/doma_output";
 import { DTELOutput } from "./objects/dtel_output";
@@ -76,7 +77,10 @@ export class Output {
       let filename = o.getName() + "." + o.getType() + ".html";
       filename = filename.toLowerCase();
       filename = filename.replace(/\//g, "#");
-      fs.writeFileSync(path.join(this.folder, filename.toLowerCase()), result, "utf-8");
+      fs.writeFileSync(
+        path.join(this.folder, filename.toLowerCase()),
+        HTML.preAmble(" - " + o.getName() + " " + o.getType()) + result + HTML.preAmble(),
+        "utf-8");
 
       indexData.push({
         "name": o.getName() + " " + o.getType(),
@@ -86,7 +90,10 @@ export class Output {
       index += `<a href="./${encodeURIComponent(filename)}">${o.getType()} ${o.getName()}</a><br>\n`
     }
 
-    fs.writeFileSync(path.join(this.folder, "index.html"), index, "utf-8");
+    fs.writeFileSync(
+      path.join(this.folder, "index.html"),
+      HTML.preAmble() + index + HTML.preAmble(),
+      "utf-8");
 
     this.buildIndex(indexData);
   }
