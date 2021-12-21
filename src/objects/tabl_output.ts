@@ -6,14 +6,22 @@ export class TABLOutput {
     let ret = "";
     const type = obj.parseType(reg);
 
-    ret += "Category: " + obj.getTableCategory() + "<br><br>";
-    const keys = obj.listKeys();
+    switch (obj.getTableCategory()) {
+      case abaplint.Objects.TableCategory.Structure:
+        ret += "Category: Structure<br><br>";
+        break;
+      case abaplint.Objects.TableCategory.Transparent:
+        ret += "Category: Transparent Table<br><br>";
+        break;
+      default:
+        ret += "Category: " + obj.getTableCategory() + "<br><br>";
+        break;
+    }
 
     if (type instanceof abaplint.BasicTypes.StructureType) {
       ret += `<table border="1">\n`;
       ret += `<tr>
       <td><u>Field</u></td>
-      <td><u>Key</u></td>
       <td><u>DDIC</u></td>
       <td><u>Type</u></td>
       </tr>\n`;
@@ -39,7 +47,6 @@ export class TABLOutput {
         }
         ret += `<tr>
         <td><tt>${f.name}</tt></td>
-        <td>${keys.some(a => a === f.name)}</td>
         <td>${ddicName}</td>
         <td>${text}</td>
         </tr>\n`;
