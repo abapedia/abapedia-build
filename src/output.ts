@@ -61,15 +61,6 @@ export class Output {
         case "TYPE":
           result = new TYPEOutput().output(o as abaplint.Objects.TypePool);
           break;
-        case "PROG":
-          // ignore?
-          continue;
-        case "DEVC":
-          // ignore?
-          continue;
-        case "MSAG":
-          // todo
-          continue;
         case "XSLT":
           result = new XSLTOutput().output(o as abaplint.Objects.Transformation);
           break;
