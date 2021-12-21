@@ -1,7 +1,7 @@
 import * as abaplint from "@abaplint/core";
 
 export class TTYPOutput {
-  public output(object: abaplint.Objects.TableType): string {
-    return object.getType() + " " + object.getName() + "<br>\n";
+  public output(_object: abaplint.Objects.TableType): string {
+    return "todo";
   }
 }

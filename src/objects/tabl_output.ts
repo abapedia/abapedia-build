@@ -3,7 +3,7 @@ import { objectLink } from "./_helpers";
 
 export class TABLOutput {
   public output(obj: abaplint.Objects.Table, reg: abaplint.IRegistry): string {
-    let ret = obj.getType() + " " + obj.getName() + "<br>\n";
+    let ret = "";
     const type = obj.parseType(reg);
     if (type instanceof abaplint.BasicTypes.StructureType) {
       ret += `<table border="1">\n`;

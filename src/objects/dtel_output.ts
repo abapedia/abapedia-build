@@ -3,7 +3,7 @@ import { objectLink } from "./_helpers";
 
 export class DTELOutput {
   public output(object: abaplint.Objects.DataElement, reg: abaplint.IRegistry): string {
-    let ret = object.getType() + " " + object.getName() + "<br>\n";
+    let ret = "";
     const parsed = object.parseType(reg);
     const domainName = object.getDomainName();
     if (domainName !== undefined && domainName !== "") {
