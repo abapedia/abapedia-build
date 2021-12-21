@@ -32,6 +32,13 @@ function buildIndex() {
   fs.writeFileSync(path.join(BUILD_FOLDER, "index.html"), html);
 }
 
+function sortObjects(objects: abaplint.IObject[]) {
+  objects.sort((a, b) => {
+    return (a.getType() + a.getName()).localeCompare(b.getType() + b.getName());
+  });
+  return objects;
+}
+
 async function run() {
   fs.rmSync(BUILD_FOLDER, {recursive: true, force: true});
 
@@ -51,7 +58,7 @@ async function run() {
       objects.push(o);
     }
 
-    new Output(p.name, result.reg).output(objects);
+    new Output(p.name, result.reg).output(sortObjects(objects));
   }
 
   buildIndex();
