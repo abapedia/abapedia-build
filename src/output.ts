@@ -43,6 +43,7 @@ export class Output {
       const next = objects[i+1];
       let result = "<h2>" + o.getType() + " " + o.getName() + "</h2>\n";
 
+      result += `<small><a href="./">Home</a></small><br>`;
       if (prev) {
         result += "<small>Previous Object: " + objectLink(prev.getType(), prev.getName()) + "</small><br>";
       }
