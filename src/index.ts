@@ -39,7 +39,7 @@ async function cloneAndParse(p: IProject) {
 function buildIndex() {
   let html = "";
   for (const p of config.projects) {
-    html += `<a href="./${p.name}/">${p.name}<br>\n`;
+    html += `<a href="./${p.name}/">${p.name}</a><br>\n`;
   }
 
   html += `<script>
