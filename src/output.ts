@@ -49,27 +49,39 @@ export class Output {
 
     switch (o.getType()) {
       case "INTF":
-        result += `<a href="adt://ME1/sap/bc/adt/oo/interfaces/${o.getName().toLowerCase()}/source/main">Open in ADT</a><br>\n`;
+        result += `<a id="adtLink" href="adt://ME1/sap/bc/adt/oo/interfaces/${o.getName().toLowerCase()}/source/main">Open in ADT</a><br>\n`;
         break;
       case "CLAS":
-        result += `<a href="adt://ME1/sap/bc/adt/oo/classes/${o.getName().toLowerCase()}/source/main">Open in ADT</a><br>\n`;
+        result += `<a id="adtLink" href="adt://ME1/sap/bc/adt/oo/classes/${o.getName().toLowerCase()}/source/main">Open in ADT</a><br>\n`;
         break;
       case "DOMA":
-        result += `<a href="adt://ME1/sap/bc/adt/ddic/domains/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
+        result += `<a id="adtLink" href="adt://ME1/sap/bc/adt/ddic/domains/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
         break;
       case "DTEL":
-        result += `<a href="adt://ME1/sap/bc/adt/ddic/dataelements/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
+        result += `<a id="adtLink" href="adt://ME1/sap/bc/adt/ddic/dataelements/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
         break;
       case "TABL":
-        result += `<a href="adt://ME1/sap/bc/adt/ddic/structures/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
+        result += `<a id="adtLink" href="adt://ME1/sap/bc/adt/ddic/structures/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
         break;
       case "TTYP":
-        result += `<a href="adt://ME1/sap/bc/adt/ddic/tabletypes/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
+        result += `<a id="adtLink" href="adt://ME1/sap/bc/adt/ddic/tabletypes/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
         break;
       case "DDLS":
-        result += `<a href="adt://ME1/sap/bc/adt/ddic/ddl/sources/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
+        result += `<a id="adtLink" href="adt://ME1/sap/bc/adt/ddic/ddl/sources/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
         break;
     }
+    result += `<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+  fixADTLink();
+});
+
+function fixADTLink() {
+   console.dir("sdfsd");
+   const e = document.getElementById("adtLink");
+   var sys = localStorage.getItem("ADT_SYSTEM");
+   e.href = e.href.replace("ME1", sys);
+}
+</script>`;
 
     result += `<br>`;
 

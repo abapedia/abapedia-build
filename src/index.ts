@@ -49,17 +49,20 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 function getValue() {
    var sys = localStorage.getItem("ADT_SYSTEM");
+   if (sys === null) {
+     sys = "ME1";
+     localStorage.setItem("ADT_SYSTEM", sys);
+   }
    document.getElementById("ADT_SYSTEM").value = sys;
 }
 
-function handleValueChange() {
-  console.dir("dsfds");
-  // localStorage.setItem("ADT_SYSTEM", 'Tom');
+function handleValueChange(i) {
+  localStorage.setItem("ADT_SYSTEM", i.toUpperCase());
   return false;
 }
 </script>
-
-<input type="text" class="" id="ADT_SYSTEM" oninput="handleValueChange()"/>`;
+<br>
+ADT System: <input type="text" size="4" maxlength="3" class="" id="ADT_SYSTEM" oninput="handleValueChange(this.value)"/>`;
 
   fs.writeFileSync(path.join(BUILD_FOLDER, "index.html"),
     HTML.preAmble() + html + HTML.postAmble(),
