@@ -1,25 +1,48 @@
 import * as abaplint from "@abaplint/core";
 
+function outputSection(def: abaplint.IInterfaceDefinition, visibility: abaplint.Visibility): string {
+  let ret = "";
+
+  for (const t of def.getTypeDefinitions().getAll()) {
+    if (t.visibility !== visibility) {
+      continue;
+    }
+    ret += `Type <tt>${t.type.getName()}</tt><br>\n`;
+  }
+  for (const a of def.getAttributes().getInstancesByVisibility(visibility)) {
+    ret += `Attribute <tt>${a.getName()}</tt><br>\n`;
+  }
+  for (const a of def.getAttributes().getStaticsByVisibility(visibility)) {
+    ret += `Static Attribute <tt>${a.getName()}</tt><br>\n`;
+  }
+  for (const a of def.getAttributes().getConstantsByVisibility(visibility)) {
+    ret += `Constant <tt>${a.getName()}</tt><br>\n`;
+  }
+  for (const m of def.getMethodDefinitions().getAll()) {
+    if (m.getVisibility() !== visibility) {
+      continue;
+    }
+    ret += `Method <tt>${m.getName()}</tt><br>\n`;
+  }
+  return ret;
+}
+
 export function outputDefinition(def: abaplint.IInterfaceDefinition | undefined): string {
   let ret = "";
   if (def === undefined) {
     return ret;
   }
 
+  ret += "<u>Public</u><br>";
   for (const i of def.getImplementing()) {
-    ret += `Interface ${i.name}<br>\n`;
+    ret += `Interface <tt>${objectLink("INTF", i.name)}</tt><br>\n`;
   }
+  ret += outputSection(def, abaplint.Visibility.Public);
 
-  for (const a of def.getAttributes().getAll()) {
-    ret += `Attribute ${a.getName()}<br>\n`;
-  }
-
-  for (const a of def.getAttributes().getConstants()) {
-    ret += `Constant ${a.getName()}<br>\n`;
-  }
-
-  for (const m of def.getMethodDefinitions().getAll()) {
-    ret += `Method ${m.getName()}<br>\n`;
+  const protectedSection = outputSection(def, abaplint.Visibility.Protected);
+  if (protectedSection !== "") {
+    ret += "<u>Protected</u><br>";
+    ret += protectedSection;
   }
 
   return ret;

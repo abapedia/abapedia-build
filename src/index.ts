@@ -8,6 +8,11 @@ import * as abaplint from "@abaplint/core";
 import { BUILD_FOLDER, Output } from "./output";
 import { HTML } from "./html";
 
+export type StatusResult = {
+  status: string,
+  successors: {type: string, name: string}[],
+}
+
 async function cloneAndParse(p: IProject) {
   process.stderr.write("Clone: " + p.url + "\n");
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "abapedia-build-"));
@@ -15,14 +20,20 @@ async function cloneAndParse(p: IProject) {
   const oldCWD = process.cwd();
   process.chdir(dir);
 
-  const args: abaplintCli.Arguments = {"format": "standard"};
+  let status = {}
+  const statusFilename = path.join(dir, "src", "_status.json");
+  if (fs.existsSync(statusFilename)) {
+    status = JSON.parse(fs.readFileSync(statusFilename, "utf-8"));
+  }
 
+  const args: abaplintCli.Arguments = {"format": "standard"};
   const result = await abaplintCli.run(args);
   process.chdir(oldCWD);
   fs.rmSync(dir, {recursive: true});
 
   console.log("issues: " + result.issues.length);
-  return result;
+
+  return {result, status};
 }
 
 function buildIndex() {
@@ -50,13 +61,13 @@ async function run() {
 
   for (const p of config.projects) {
     const result = await cloneAndParse(p);
-    if (result.reg === undefined) {
+    if (result.result.reg === undefined) {
       continue;
     }
 
     const objects: abaplint.IObject[] = [];
-    for (const o of result.reg.getObjects()) {
-      if (result.reg.isDependency(o)) {
+    for (const o of result.result.reg.getObjects()) {
+      if (result.result.reg.isDependency(o)) {
         continue;
       } else if (p.skip && o.getFiles()[0].getFilename().includes(p.skip)) {
         continue;
@@ -64,7 +75,7 @@ async function run() {
       objects.push(o);
     }
 
-    new Output(p.name, result.reg).output(sortAndFilterObjects(objects));
+    new Output(p.name, result.result.reg, result.status, p.url).output(sortAndFilterObjects(objects));
   }
 
   buildIndex();

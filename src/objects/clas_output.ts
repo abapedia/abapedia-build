@@ -7,7 +7,7 @@ export class CLASOutput {
 
     const def = object.getClassDefinition();
     if (def?.superClassName) {
-      ret += "Superclass: " + objectLink("CLAS", def.superClassName) + "<br>";
+      ret += "Superclass: " + objectLink("CLAS", def.superClassName) + "<br><br>\n";
     }
 
     ret += outputDefinition(object.getDefinition());
