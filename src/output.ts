@@ -24,10 +24,12 @@ export class Output {
   private readonly folder: string;
   private readonly name: string;
   private readonly reg: abaplint.IRegistry;
+  private readonly status: any;
 
-  public constructor(name: string, reg: abaplint.IRegistry) {
+  public constructor(name: string, reg: abaplint.IRegistry, status: any) {
     this.reg = reg;
     this.name = name;
+    this.status = status;
     this.folder = path.join(BUILD_FOLDER, name);
     fs.mkdirSync(this.folder, {recursive: true});
   }
@@ -51,6 +53,18 @@ export class Output {
         result += "<small>Next Object: " + objectLink(next.getType(), next.getName()) + "</small><br>";
       }
       result += "<br>";
+
+      const stat = this.status[o.getType().toLowerCase() + "," + o.getName().toLowerCase()];
+      if (stat !== undefined) {
+        result += "Status: " + stat.status;
+        if (stat.successors.length > 0) {
+          result += ", use " + stat.successors.map((a: any) => objectLink(a.type, a.name)).join(" or ") + " instead";
+          result += "<br>";
+        } else {
+          result += "<br>";
+        }
+        result += "<br>";
+      }
 
       switch (o.getType()) {
         case "CLAS":
