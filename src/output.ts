@@ -45,7 +45,7 @@ export class Output {
     } else {
       filename = o.getFiles()[0].getFilename().substr(1);
     }
-    result += `<a href="${this.url + "/blob/main" + filename}">Source Link</a><br>\n`;
+    result += `<a href="${this.url + "/blob/main" + encodeURIComponent(filename!)}">Source Link</a><br>\n`;
 
     switch (o.getType()) {
       case "INTF":
