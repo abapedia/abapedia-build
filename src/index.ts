@@ -62,7 +62,7 @@ function handleValueChange(i) {
 }
 </script>
 <br>
-ADT System: <input type="text" size="4" maxlength="3" class="" id="ADT_SYSTEM" oninput="handleValueChange(this.value)"/>`;
+System for "Open in ADT" link: <input type="text" size="4" maxlength="3" class="" id="ADT_SYSTEM" oninput="handleValueChange(this.value)"/>`;
 
   fs.writeFileSync(path.join(BUILD_FOLDER, "index.html"),
     HTML.preAmble() + html + HTML.postAmble(),
