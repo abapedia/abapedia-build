@@ -102,6 +102,7 @@ async function run() {
   }
 
   buildIndex();
+  fs.copyFileSync("./img/favicon.ico", "./build/favicon.ico");
 }
 
 run().then(() => {
