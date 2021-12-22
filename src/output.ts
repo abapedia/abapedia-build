@@ -91,7 +91,7 @@ function fixADTLink() {
   public output(objects: abaplint.IObject[]): void {
     console.log("objects: " + objects.length);
 
-    let index = "";
+    let indexHtml = `<h2>${this.name}</h2>\n`;
     const indexData: IndexData[] = [];
     for (let i = 0; i < objects.length; i++) {
       const o = objects[i];
@@ -162,18 +162,18 @@ function fixADTLink() {
         "text": result.replace(/<[^>]*>?/gm, ''),
       });
 
-      index += `<a href="./${encodeURIComponent(filename)}">${o.getType()} ${o.getName()}</a><br>\n`
+      indexHtml += `<a href="./${encodeURIComponent(filename)}">${o.getType()} ${o.getName()}</a><br>\n`
     }
 
     fs.writeFileSync(
       path.join(this.folder, "index.html"),
-      HTML.preAmble(" - " + this.name) + index + HTML.preAmble(),
+      HTML.preAmble(" - " + this.name) + indexHtml + HTML.preAmble(),
       "utf-8");
 
-    this.buildIndex(indexData);
+    this.buildSearchIndex(indexData);
   }
 
-  private buildIndex(indexData: IndexData[]) {
+  private buildSearchIndex(indexData: IndexData[]) {
     const idx = lunr(function () {
       this.ref('name');
       this.field('text');
