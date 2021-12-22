@@ -41,6 +41,26 @@ function buildIndex() {
   for (const p of config.projects) {
     html += `<a href="./${p.name}/">${p.name}<br>\n`;
   }
+
+  html += `<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    getValue();
+});
+
+function getValue() {
+   var sys = localStorage.getItem("ADT_SYSTEM");
+   document.getElementById("ADT_SYSTEM").value = sys;
+}
+
+function handleValueChange() {
+  console.dir("dsfds");
+  // localStorage.setItem("ADT_SYSTEM", 'Tom');
+  return false;
+}
+</script>
+
+<input type="text" class="" id="ADT_SYSTEM" oninput="handleValueChange()"/>`;
+
   fs.writeFileSync(path.join(BUILD_FOLDER, "index.html"),
     HTML.preAmble() + html + HTML.postAmble(),
     "utf-8");
