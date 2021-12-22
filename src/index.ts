@@ -75,7 +75,7 @@ async function run() {
       objects.push(o);
     }
 
-    new Output(p.name, result.result.reg, result.status).output(sortAndFilterObjects(objects));
+    new Output(p.name, result.result.reg, result.status, p.url).output(sortAndFilterObjects(objects));
   }
 
   buildIndex();

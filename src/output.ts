@@ -25,13 +25,55 @@ export class Output {
   private readonly name: string;
   private readonly reg: abaplint.IRegistry;
   private readonly status: any;
+  private readonly url: string;
 
-  public constructor(name: string, reg: abaplint.IRegistry, status: any) {
+  public constructor(name: string, reg: abaplint.IRegistry, status: any, url: string) {
     this.reg = reg;
     this.name = name;
     this.status = status;
+    this.url = url;
     this.folder = path.join(BUILD_FOLDER, name);
     fs.mkdirSync(this.folder, {recursive: true});
+  }
+
+  private linkFile(o: abaplint.IObject): string {
+    let result = "";
+
+    let filename: string | undefined = "";
+    if (o instanceof abaplint.ABAPObject) {
+      filename = o.getMainABAPFile()?.getFilename().substr(1);
+    } else {
+      filename = o.getFiles()[0].getFilename().substr(1);
+    }
+    result += `<a href="${this.url + "/blob/main" + filename}">Source Link</a><br>\n`;
+
+    switch (o.getType()) {
+      case "INTF":
+        result += `<a href="adt://ME1/sap/bc/adt/oo/interfaces/${o.getName().toLowerCase()}/source/main">Open in ADT</a><br>\n`;
+        break;
+      case "CLAS":
+        result += `<a href="adt://ME1/sap/bc/adt/oo/classes/${o.getName().toLowerCase()}/source/main">Open in ADT</a><br>\n`;
+        break;
+      case "DOMA":
+        result += `<a href="adt://ME1/sap/bc/adt/ddic/domains/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
+        break;
+      case "DTEL":
+        result += `<a href="adt://ME1/sap/bc/adt/ddic/dataelements/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
+        break;
+      case "TABL":
+        result += `<a href="adt://ME1/sap/bc/adt/ddic/structures/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
+        break;
+      case "TTYP":
+        result += `<a href="adt://ME1/sap/bc/adt/ddic/tabletypes/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
+        break;
+      case "DDLS":
+        result += `<a href="adt://ME1/sap/bc/adt/ddic/ddl/sources/${o.getName().toLowerCase()}">Open in ADT</a><br>\n`;
+        break;
+    }
+
+    result += `<br>`;
+
+    return result;
   }
 
   public output(objects: abaplint.IObject[]): void {
@@ -44,6 +86,8 @@ export class Output {
       const prev = objects[i-1];
       const next = objects[i+1];
       let result = "<h2>" + o.getType() + " " + o.getName() + "</h2>\n";
+
+      result += this.linkFile(o);;
 
       result += `<small><a href="./">Home</a></small><br>`;
       if (prev) {
