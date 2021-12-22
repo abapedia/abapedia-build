@@ -2,6 +2,13 @@ import * as abaplint from "@abaplint/core";
 
 function outputSection(def: abaplint.IInterfaceDefinition, visibility: abaplint.Visibility): string {
   let ret = "";
+
+  for (const t of def.getTypeDefinitions().getAll()) {
+    if (t.visibility !== visibility) {
+      continue;
+    }
+    ret += `Type <tt>${t.type.getName()}</tt><br>\n`;
+  }
   for (const a of def.getAttributes().getInstancesByVisibility(visibility)) {
     ret += `Attribute <tt>${a.getName()}</tt><br>\n`;
   }
@@ -32,8 +39,11 @@ export function outputDefinition(def: abaplint.IInterfaceDefinition | undefined)
   }
   ret += outputSection(def, abaplint.Visibility.Public);
 
-  ret += "<u>Protected</u><br>";
-  ret += outputSection(def, abaplint.Visibility.Protected);
+  const protectedSection = outputSection(def, abaplint.Visibility.Protected);
+  if (protectedSection !== "") {
+    ret += "<u>Protected</u><br>";
+    ret += protectedSection;
+  }
 
   return ret;
 }
