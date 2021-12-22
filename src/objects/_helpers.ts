@@ -1,5 +1,28 @@
 import * as abaplint from "@abaplint/core";
 
+function methodParameters(m: abaplint.IMethodDefinition): string {
+  let ret = "";
+
+  const optional = m.getParameters().getOptional();
+
+  for (const p of m.getParameters().getImporting()) {
+    const opt: string = optional.some(a => a.toUpperCase() === p.getName().toUpperCase()) ? " Optional" : "";
+    ret += "&nbsp;&nbsp;IMPORTING <tt>" + p.getName() + `</tt>${opt}<br>\n`;
+  }
+  for (const p of m.getParameters().getChanging()) {
+    const opt: string = optional.some(a => a.toUpperCase() === p.getName().toUpperCase()) ? " Optional" : "";
+    ret += "&nbsp;&nbsp;CHANGING <tt>" + p.getName() + `</tt>${opt}<br>\n`;
+  }
+  for (const p of m.getParameters().getExporting()) {
+    ret += "&nbsp;&nbsp;EXPORTING <tt>" + p.getName() + `</tt><br>\n`;
+  }
+  const returning = m.getParameters().getReturning();
+  if (returning) {
+    ret += "&nbsp;&nbsp;RETURNING <tt>" + returning.getName() + "</tt><br>\n";
+  }
+  return ret;
+}
+
 function outputSection(def: abaplint.IInterfaceDefinition, visibility: abaplint.Visibility): string {
   let ret = "";
 
@@ -23,6 +46,7 @@ function outputSection(def: abaplint.IInterfaceDefinition, visibility: abaplint.
       continue;
     }
     ret += `Method <tt>${m.getName()}</tt><br>\n`;
+    ret += methodParameters(m);
   }
   return ret;
 }
