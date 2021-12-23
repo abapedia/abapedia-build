@@ -91,7 +91,8 @@ function fixADTLink() {
   public output(objects: abaplint.IObject[]): void {
     console.log("objects: " + objects.length);
 
-    let index = "";
+    let indexHtml = `<h2>${this.name}</h2>
+      <small>${objects.length} objects</small><br><br>\n`;
     const indexData: IndexData[] = [];
     for (let i = 0; i < objects.length; i++) {
       const o = objects[i];
@@ -99,7 +100,7 @@ function fixADTLink() {
       const next = objects[i+1];
       let result = "<h2>" + o.getType() + " " + o.getName() + "</h2>\n";
 
-      result += this.linkFile(o);;
+      result += this.linkFile(o);
 
       result += `<small><a href="./">Home</a></small><br>`;
       if (prev) {
@@ -162,18 +163,18 @@ function fixADTLink() {
         "text": result.replace(/<[^>]*>?/gm, ''),
       });
 
-      index += `<a href="./${encodeURIComponent(filename)}">${o.getType()} ${o.getName()}</a><br>\n`
+      indexHtml += `<a href="./${encodeURIComponent(filename)}">${o.getType()} ${o.getName()}</a><br>\n`
     }
 
     fs.writeFileSync(
       path.join(this.folder, "index.html"),
-      HTML.preAmble(" - " + this.name) + index + HTML.preAmble(),
+      HTML.preAmble(" - " + this.name) + indexHtml + HTML.preAmble(),
       "utf-8");
 
-    this.buildIndex(indexData);
+    this.buildSearchIndex(indexData);
   }
 
-  private buildIndex(indexData: IndexData[]) {
+  private buildSearchIndex(indexData: IndexData[]) {
     const idx = lunr(function () {
       this.ref('name');
       this.field('text');
