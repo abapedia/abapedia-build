@@ -45,7 +45,11 @@ function outputSection(def: abaplint.IInterfaceDefinition, visibility: abaplint.
     if (m.getVisibility() !== visibility) {
       continue;
     }
-    ret += `Method <tt>${m.getName()}</tt><br>\n`;
+    if (m.isStatic() === true) {
+      ret += `Static Method <tt>${m.getName()}</tt><br>\n`;
+    } else {
+      ret += `Method <tt>${m.getName()}</tt><br>\n`;
+    }
     ret += methodParameters(m);
   }
   return ret;
