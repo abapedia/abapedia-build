@@ -91,7 +91,8 @@ function fixADTLink() {
   public output(objects: abaplint.IObject[]): void {
     console.log("objects: " + objects.length);
 
-    let indexHtml = `<h2>${this.name}</h2>\n`;
+    let indexHtml = `<h2>${this.name}</h2>
+      <small>${objects.length} objects</small><br><br>\n`;
     const indexData: IndexData[] = [];
     for (let i = 0; i < objects.length; i++) {
       const o = objects[i];
@@ -99,7 +100,7 @@ function fixADTLink() {
       const next = objects[i+1];
       let result = "<h2>" + o.getType() + " " + o.getName() + "</h2>\n";
 
-      result += this.linkFile(o);;
+      result += this.linkFile(o);
 
       result += `<small><a href="./">Home</a></small><br>`;
       if (prev) {
