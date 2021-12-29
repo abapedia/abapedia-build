@@ -4,6 +4,7 @@ import lunr = require("lunr");
 import * as path from "path";
 import { HTML } from "./html";
 import { CLASOutput } from "./objects/clas_output";
+import { DDLSOutput } from "./objects/ddls_output";
 import { DOMAOutput } from "./objects/doma_output";
 import { DTELOutput } from "./objects/dtel_output";
 import { INTFOutput } from "./objects/intf_output";
@@ -147,6 +148,9 @@ function fixADTLink() {
           break;
         case "XSLT":
           result += new XSLTOutput().output(o as abaplint.Objects.Transformation);
+          break;
+        case "DDLS":
+          result += new DDLSOutput().output(o as abaplint.Objects.DataDefinition);
           break;
         default:
           console.dir("TODO: handle object type " + o.getType());
