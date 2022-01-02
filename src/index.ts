@@ -6,7 +6,7 @@ import {config, IProject} from "./config";
 import * as abaplintCli from "@abaplint/cli";
 import * as abaplint from "@abaplint/core";
 import { BUILD_FOLDER, Output } from "./output";
-import { HTML } from "./html";
+import { buildFrontpage } from "./frontpage";
 
 export type StatusResult = {
   status: string,
@@ -34,39 +34,6 @@ async function cloneAndParse(p: IProject) {
   console.log("issues: " + result.issues.length);
 
   return {result, status};
-}
-
-function buildIndex() {
-  let html = "";
-  for (const p of config.projects) {
-    html += `<a href="./${p.name}/">${p.name}</a><br>\n`;
-  }
-
-  html += `<script>
-window.addEventListener('DOMContentLoaded', (event) => {
-    getValue();
-});
-
-function getValue() {
-   var sys = localStorage.getItem("ADT_SYSTEM");
-   if (sys === null) {
-     sys = "ME1";
-     localStorage.setItem("ADT_SYSTEM", sys);
-   }
-   document.getElementById("ADT_SYSTEM").value = sys;
-}
-
-function handleValueChange(i) {
-  localStorage.setItem("ADT_SYSTEM", i.toUpperCase());
-  return false;
-}
-</script>
-<br>
-System for "Open in ADT" link: <input type="text" size="4" maxlength="3" class="" id="ADT_SYSTEM" oninput="handleValueChange(this.value)"/>`;
-
-  fs.writeFileSync(path.join(BUILD_FOLDER, "index.html"),
-    HTML.preAmble() + html + HTML.postAmble(),
-    "utf-8");
 }
 
 function sortAndFilterObjects(objects: abaplint.IObject[]) {
@@ -101,7 +68,7 @@ async function run() {
     new Output(p.name, result.result.reg, result.status, p.url).output(sortAndFilterObjects(objects));
   }
 
-  buildIndex();
+  buildFrontpage();
   fs.copyFileSync("./img/favicon.ico", "./build/favicon.ico");
 }
 

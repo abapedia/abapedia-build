@@ -1,6 +1,6 @@
+import lunr = require("lunr");
 import * as abaplint from "@abaplint/core";
 import * as fs from "fs";
-import lunr = require("lunr");
 import * as path from "path";
 import { HTML } from "./html";
 import { CLASOutput } from "./objects/clas_output";
@@ -159,7 +159,7 @@ function fixADTLink() {
       const filename = objectFilename(o);
       fs.writeFileSync(
         path.join(this.folder, filename.toLowerCase()),
-        HTML.preAmble(" - " + o.getName() + " " + o.getType()) + result + HTML.preAmble(),
+        HTML.preAmble(" - " + o.getName() + " " + o.getType()) + result + HTML.postAmble(),
         "utf-8");
 
       indexData.push({
@@ -172,7 +172,7 @@ function fixADTLink() {
 
     fs.writeFileSync(
       path.join(this.folder, "index.html"),
-      HTML.preAmble(" - " + this.name) + indexHtml + HTML.preAmble(),
+      HTML.preAmble(" - " + this.name) + indexHtml + HTML.postAmble(),
       "utf-8");
 
     this.buildSearchIndex(indexData);
