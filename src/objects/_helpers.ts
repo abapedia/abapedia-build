@@ -22,17 +22,29 @@ function methodParameters(m: abaplint.IMethodDefinition): string {
 
   const optional = m.getParameters().getOptional();
 
+  if (m.getParameters().getImporting().length > 0) {
+    ret += `&nbsp;&nbsp;IMPORTING<br>\n`;
+  }
   for (const p of m.getParameters().getImporting()) {
     const opt: string = optional.some(a => a.toUpperCase() === p.getName().toUpperCase()) ? " Optional" : "";
-    ret += "&nbsp;&nbsp;IMPORTING <tt>" + p.getName() + `</tt> TYPE <tt>${typeText(p)}</tt>${opt}<br>\n`;
+    ret += "&nbsp;&nbsp;&nbsp;&nbsp<tt>" + p.getName() + `</tt> TYPE <tt>${typeText(p)}</tt>${opt}<br>\n`;
+  }
+
+  if (m.getParameters().getChanging().length > 0) {
+    ret += `&nbsp;&nbsp;CHANGING<br>\n`;
   }
   for (const p of m.getParameters().getChanging()) {
     const opt: string = optional.some(a => a.toUpperCase() === p.getName().toUpperCase()) ? " Optional" : "";
-    ret += "&nbsp;&nbsp;CHANGING <tt>" + p.getName() + `</tt> TYPE <tt>${typeText(p)}</tt>${opt}<br>\n`;
+    ret += "&nbsp;&nbsp;&nbsp;&nbsp<tt>" + p.getName() + `</tt> TYPE <tt>${typeText(p)}</tt>${opt}<br>\n`;
+  }
+
+  if (m.getParameters().getExporting().length > 0) {
+    ret += `&nbsp;&nbsp;EXPORTING<br>\n`;
   }
   for (const p of m.getParameters().getExporting()) {
-    ret += "&nbsp;&nbsp;EXPORTING <tt>" + p.getName() + `</tt> TYPE <tt>${typeText(p)}</tt><br>\n`;
+    ret += "&nbsp;&nbsp;&nbsp;&nbsp<tt>" + p.getName() + `</tt> TYPE <tt>${typeText(p)}</tt><br>\n`;
   }
+
   const returning = m.getParameters().getReturning();
   if (returning) {
     ret += "&nbsp;&nbsp;RETURNING <tt>" + returning.getName() + "</tt> TYPE <tt>" + typeText(returning) + "</tt><br>\n";
