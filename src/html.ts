@@ -21,7 +21,9 @@ export class HTML {
   }
 
   public static postAmble(): string {
-    return `<br><center><small>Made using <a href="https://abaplint.app">abaplint.app</a></small></center>
+    return `<br>
+    <center><small>Bug reports and ideas <a href="https://github.com/abapedia/abapedia.org/issues">welcome</a></small></center>
+    <center><small>Made using <a href="https://abaplint.app">abaplint.app</a></small></center>
   </body>
 </html>`;
   }
