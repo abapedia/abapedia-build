@@ -129,7 +129,7 @@ function fixADTLink() {
           result += new CLASOutput().output(o as abaplint.Objects.Class);
           break;
         case "TTYP":
-          result += new TTYPOutput().output(o as abaplint.Objects.TableType);
+          result += new TTYPOutput().output(o as abaplint.Objects.TableType, this.reg);
           break;
         case "DTEL":
           result += new DTELOutput().output(o as abaplint.Objects.DataElement, this.reg);
