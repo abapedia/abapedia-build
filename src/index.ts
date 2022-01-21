@@ -7,6 +7,7 @@ import * as abaplintCli from "@abaplint/cli";
 import * as abaplint from "@abaplint/core";
 import { BUILD_FOLDER, Output } from "./output";
 import { buildFrontpage } from "./frontpage";
+import fetch from 'cross-fetch';
 
 export type StatusResult = {
   status: string,
@@ -46,8 +47,24 @@ function sortAndFilterObjects(objects: abaplint.IObject[]) {
   return objects;
 }
 
+async function buildExistence() {
+  const res: any = {};
+  let response = await fetch('https://raw.githubusercontent.com/abapedia/object-existence/main/json/on_prem_702.json');
+  res["702"] = (await response.json()).object_list;
+
+  response = await fetch('https://raw.githubusercontent.com/abapedia/object-existence/main/json/on_prem_750.json');
+  res["750"] = (await response.json()).object_list;
+
+  response = await fetch('https://raw.githubusercontent.com/abapedia/object-existence/main/json/on_prem_754.json');
+  res["754"] = (await response.json()).object_list;
+
+  return res;
+}
+
 async function run() {
   fs.rmSync(BUILD_FOLDER, {recursive: true, force: true});
+
+  const existence = await buildExistence();
 
   for (const p of config.projects) {
     const result = await cloneAndParse(p);
@@ -65,7 +82,7 @@ async function run() {
       objects.push(o);
     }
 
-    new Output(p.name, result.result.reg, result.status, p.url).output(sortAndFilterObjects(objects));
+    new Output(p.name, result.result.reg, result.status, p.url, existence).output(sortAndFilterObjects(objects));
   }
 
   buildFrontpage();
