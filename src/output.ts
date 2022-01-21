@@ -27,13 +27,15 @@ export class Output {
   private readonly reg: abaplint.IRegistry;
   private readonly status: any;
   private readonly url: string;
+  private readonly existence: any;
 
-  public constructor(name: string, reg: abaplint.IRegistry, status: any, url: string) {
+  public constructor(name: string, reg: abaplint.IRegistry, status: any, url: string, existence: any) {
     this.reg = reg;
     this.name = name;
     this.status = status;
     this.url = url;
     this.folder = path.join(BUILD_FOLDER, name);
+    this.existence = existence;
     fs.mkdirSync(this.folder, {recursive: true});
   }
 
@@ -77,7 +79,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
 });
 
 function fixADTLink() {
-   console.dir("sdfsd");
    const e = document.getElementById("adtLink");
    var sys = localStorage.getItem("ADT_SYSTEM");
    e.href = e.href.replace("ME1", sys);
@@ -156,6 +157,9 @@ function fixADTLink() {
           console.dir("TODO: handle object type " + o.getType());
           break;
       }
+
+      result += this.buildExistence(o);
+
       const filename = objectFilename(o);
       fs.writeFileSync(
         path.join(this.folder, filename.toLowerCase()),
@@ -176,6 +180,17 @@ function fixADTLink() {
       "utf-8");
 
     this.buildSearchIndex(indexData);
+  }
+
+  private buildExistence(o: abaplint.IObject): string {
+    let ret = "<br>Exists on:\n<table>";
+    for (const version of Object.keys(this.existence).reverse()) {
+      const found = this.existence[version].find((e: any) => e.object = o.getType() && e.obj_name === o.getName());
+      const bg = found?.exists === true ? "bgcolor='green'" : "bgcolor='red'";
+      ret += "<tr><td>" + version + "</td><td " + bg + ">" + found?.exists + "</td></tr>\n";
+    }
+    ret += "</table>"
+    return ret;
   }
 
   private buildSearchIndex(indexData: IndexData[]) {
