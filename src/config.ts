@@ -10,13 +10,6 @@ export interface IConfig {
 
 export const config: IConfig = {
   projects: [
-    /*
-    {
-      name: "abap2xlsx",
-      url: "https://github.com/sapmentors/abap2xlsx",
-      skip: "demos/",
-    },
-    */
     {
       name: "steampunk-2111-api",
       url: "https://github.com/abapedia/steampunk-2111-api",
@@ -30,6 +23,11 @@ export const config: IConfig = {
     {
       name: "steampunk-2205-api",
       url: "https://github.com/abapedia/steampunk-2205-api",
+      skip: "",
+    },
+    {
+      name: "open-abap",
+      url: "https://github.com/open-abap/open-abap",
       skip: "",
     }
   ]
