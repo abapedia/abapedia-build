@@ -26,6 +26,11 @@ export const config: IConfig = {
       skip: "",
     },
     {
+      name: "steampunk-2208-api",
+      url: "https://github.com/abapedia/steampunk-2208-api",
+      skip: "",
+    },
+    {
       name: "open-abap",
       url: "https://github.com/open-abap/open-abap",
       skip: "",
