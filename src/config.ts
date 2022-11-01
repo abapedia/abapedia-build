@@ -31,8 +31,8 @@ export const config: IConfig = {
       skip: "",
     },
     {
-      name: "open-abap",
-      url: "https://github.com/open-abap/open-abap",
+      name: "open-abap-core",
+      url: "https://github.com/open-abap/open-abap-core",
       skip: "",
     }
   ]
