@@ -3,11 +3,11 @@ import * as os from "os";
 import * as path from "path";
 import * as childProcess from "child_process";
 import {config, IProject} from "./config";
-import * as abaplintCli from "@abaplint/cli";
 import * as abaplint from "@abaplint/core";
 import { BUILD_FOLDER, Output } from "./output";
 import { buildFrontpage } from "./frontpage";
 import fetch from 'cross-fetch';
+import * as glob from 'glob';
 
 export type StatusResult = {
   status: string,
@@ -16,25 +16,23 @@ export type StatusResult = {
 
 async function cloneAndParse(p: IProject) {
   process.stderr.write("Clone: " + p.url + "\n");
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "abapedia-build-"));
-  childProcess.execSync("git clone --quiet --depth 1 " + p.url + " .", {cwd: dir, stdio: "inherit"});
-  const oldCWD = process.cwd();
-  process.chdir(dir);
+  const tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), "abapedia-build-"));
+  childProcess.execSync("git clone --quiet --depth 1 " + p.url + " .", {cwd: tmpdir, stdio: "inherit"});
 
   let status = {}
-  const statusFilename = path.join(dir, "src", "_status.json");
+  const statusFilename = path.join(tmpdir, "src", "_status.json");
   if (fs.existsSync(statusFilename)) {
     status = JSON.parse(fs.readFileSync(statusFilename, "utf-8"));
   }
 
-  const args: abaplintCli.Arguments = {"format": "standard"};
-  const result = await abaplintCli.run(args);
-  process.chdir(oldCWD);
-  fs.rmSync(dir, {recursive: true});
+  const reg = new abaplint.Registry();
+  const filenames = glob.sync("src/**/*.*", {nosort: true, nodir: true, cwd: tmpdir});
+  filenames.forEach(f => reg.addFile(new abaplint.MemoryFile(f, fs.readFileSync(path.join(tmpdir, f)).toString("utf-8"))));
+  await reg.parseAsync();
 
-  console.log("issues: " + result.issues.length);
+  fs.rmSync(tmpdir, {recursive: true});
 
-  return {result, status};
+  return {reg, status};
 }
 
 function sortAndFilterObjects(objects: abaplint.IObject[]) {
@@ -68,13 +66,13 @@ async function run() {
 
   for (const p of config.projects) {
     const result = await cloneAndParse(p);
-    if (result.result.reg === undefined) {
+    if (result.reg === undefined) {
       continue;
     }
 
     const objects: abaplint.IObject[] = [];
-    for (const o of result.result.reg.getObjects()) {
-      if (result.result.reg.isDependency(o)) {
+    for (const o of result.reg.getObjects()) {
+      if (result.reg.isDependency(o)) {
         continue;
       } else if (p.skip && o.getFiles()[0].getFilename().includes(p.skip)) {
         continue;
@@ -82,7 +80,7 @@ async function run() {
       objects.push(o);
     }
 
-    new Output(p.name, result.result.reg, result.status, p.url, existence).output(sortAndFilterObjects(objects));
+    new Output(p.name, result.reg, result.status, p.url, existence).output(sortAndFilterObjects(objects));
   }
 
   buildFrontpage();
