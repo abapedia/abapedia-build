@@ -46,6 +46,11 @@ export const config: IConfig = {
       skip: "",
     },
     {
+      name: "steampunk-2305-api-intersect-702",
+      url: "https://github.com/abapedia/steampunk-2305-api-intersect-702",
+      skip: "",
+    },
+    {
       name: "open-abap-core",
       url: "https://github.com/open-abap/open-abap-core",
       skip: "",
