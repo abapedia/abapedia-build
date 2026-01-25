@@ -51,6 +51,11 @@ export const config: IConfig = {
       skip: "",
     },
     {
+      name: "s4-private-2022-doma-and-dtel",
+      url: "https://github.com/abapedia/s4-private-2022-doma-and-dtel",
+      skip: "",
+    },
+    {
       name: "open-abap-core",
       url: "https://github.com/open-abap/open-abap-core",
       skip: "",
