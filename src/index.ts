@@ -27,8 +27,11 @@ async function cloneAndParse(p: IProject) {
 
   const reg = new abaplint.Registry();
   const filenames = glob.sync("src/**/*.*", {nosort: true, nodir: true, cwd: tmpdir});
+  process.stderr.write("  Loading " + filenames.length + " files\n");
   filenames.forEach(f => reg.addFile(new abaplint.MemoryFile(f, fs.readFileSync(path.join(tmpdir, f)).toString("utf-8"))));
+  process.stderr.write("  Parsing\n");
   await reg.parseAsync();
+  process.stderr.write("  Parsing Done\n");
 
   fs.rmSync(tmpdir, {recursive: true});
 

@@ -91,7 +91,7 @@ function fixADTLink() {
   }
 
   public output(objects: abaplint.IObject[]): void {
-    console.log("objects: " + objects.length);
+    console.log("  Objects: " + objects.length);
 
     let indexHtml = `<h2>${this.name}</h2>
       <small>${objects.length} objects</small><br><br>\n`;
