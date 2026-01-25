@@ -7,6 +7,10 @@ function typeText(id: abaplint.TypedIdentifier): string {
     typeText = "csequence";
   } else if (type instanceof abaplint.BasicTypes.CLikeType) {
     typeText = "clike";
+  } else if (type instanceof abaplint.BasicTypes.CGenericType) {
+    typeText = "c";
+  } else if (type instanceof abaplint.BasicTypes.XGenericType) {
+    typeText = "x";
   } else if (type instanceof abaplint.BasicTypes.XSequenceType) {
     typeText = "xsequence";
   } else if (type instanceof abaplint.BasicTypes.NumericGenericType) {
