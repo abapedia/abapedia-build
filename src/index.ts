@@ -30,7 +30,7 @@ async function cloneAndParse(p: IProject) {
   process.stderr.write("  Loading " + filenames.length + " files\n");
   filenames.forEach(f => reg.addFile(new abaplint.MemoryFile(f, fs.readFileSync(path.join(tmpdir, f)).toString("utf-8"))));
   process.stderr.write("  Parsing\n");
-  await reg.parseAsync();
+  reg.parse();
   process.stderr.write("  Parsing Done\n");
 
   fs.rmSync(tmpdir, {recursive: true});
